@@ -3,6 +3,8 @@ import os
 
 API_TOKEN = os.getenv('API_TOKEN')
 
+print(API_TOKEN)
+
 if API_TOKEN is None:
     raise ValueError("No API token provided")
 
