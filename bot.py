@@ -3,6 +3,9 @@ import os
 
 API_TOKEN = os.getenv('API_TOKEN')
 
+if API_TOKEN is None:
+    raise ValueError("No API token provided")
+
 bot = telebot.TeleBot(API_TOKEN)
 
 @bot.message_handler(commands=['start'])
