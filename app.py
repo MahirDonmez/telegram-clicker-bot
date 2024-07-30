@@ -1,30 +1,16 @@
-from flask import Flask, request
-import telegram
+import telebot
 import os
 
-TOKEN = '7218079882:AAGYrv9K047rLfsoE4p59orPA73kUUeNais'
-bot = telegram.Bot(token=TOKEN)
+API_TOKEN = os.getenv('API_TOKEN')
 
-app = Flask(__name__)
+bot = telebot.TeleBot(API_TOKEN)
 
-@app.route('/{}'.format(TOKEN), methods=['POST'])
-def respond():
-    update = telegram.Update.de_json(request.get_json(force=True), bot)
-    chat_id = update.message.chat_id
-    text = update.message.text
+@bot.message_handler(commands=['start'])
+def send_welcome(message):
+    bot.reply_to(message, "Welcome to the Clicker Game!")
 
-    if text == '/start':
-        bot.sendMessage(chat_id=chat_id, text="Welcome to my Telegram bot!")
-    elif text == '/ping':
-        bot.sendMessage(chat_id=chat_id, text="Pong!")
-    else:
-        bot.sendMessage(chat_id=chat_id, text="Sorry, I don't understand that command.")
+@bot.message_handler(func=lambda message: True)
+def echo_all(message):
+    bot.reply_to(message, message.text)
 
-    return 'ok'
-
-@app.route('/')
-def index():
-    return 'Hello World!'
-
-if __name__ == '__main__':
-    app.run(threaded=True)
+bot.infinity_polling()
